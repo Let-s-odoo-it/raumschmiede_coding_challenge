@@ -1,0 +1,83 @@
+<?xml version="1.0"?>
+<odoo>
+    <data>
+        <template id="edit_checkboxes_assets_backend" name="edit checkboxes" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+                <script type="text/javascript" src="/raumschmiede_crm/static/src/js/relational_fields.js"></script>
+            </xpath>
+        </template>
+    </data>
+    <record id="crm_lead_view_form" model="ir.ui.view">
+        <field name="name">crm.lead.form.raumschmiede</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="arch" type="xml">
+            <page name="lead" position="after">
+                <page string="Checkliste">
+                    <group>
+                        <field name="progress" widget="progressbar"/>
+                    </group>
+                    <group>
+                        <field name="tasks" widget="many2many_checkboxes_edit"/>
+                    </group>
+                </page>
+            </page>
+        </field>
+    </record>
+    <record id="crm_case_kanban_view_leads" model="ir.ui.view">
+        <field name="name">crm.lead.kanban.raumschmiede</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_case_kanban_view_leads"/>
+        <field name="arch" type="xml">
+            <field name="activity_ids" position="after">
+                <field name="progress"/>
+            </field>
+            <xpath expr="//templates//field[@name='priority']/../.." position="before">
+                <div>
+                    <field name="progress" widget="progressbar"/>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_crm_lead_task_form" model="ir.ui.view">
+        <field name="name">crm.lead.task.form</field>
+        <field name="model">crm.lead.task</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="description"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_crm_lead_task_tree" model="ir.ui.view">
+        <field name="name">crm.lead.task.tree</field>
+        <field name="model">crm.lead.task</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="description"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="crm_lead_task_configuration_action" model="ir.actions.act_window">
+        <field name="name">Lead Tasks</field>
+        <field name="res_model">crm.lead.task</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new Lead Task which will be shown in every CRM Lead
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="crm_lead_task_configuration"
+        name="Lead Tasks"
+        parent="crm.crm_menu_config"
+        action="crm_lead_task_configuration_action"
+        sequence="11"/>
+</odoo>
